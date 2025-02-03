@@ -4,10 +4,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import springbootawsbook.springawsbook.domain.posts.Posts;
-import springbootawsbook.springawsbook.domain.posts.PostsRepository;import springbootawsbook.springawsbook.web.dto.PostsResponseDto;
+import springbootawsbook.springawsbook.domain.posts.PostsRepository;
+import springbootawsbook.springawsbook.web.dto.PostsListResponseDto;
+import springbootawsbook.springawsbook.web.dto.PostsResponseDto;
 
 import springbootawsbook.springawsbook.web.dto.PostsSaveRequestDto;
 import springbootawsbook.springawsbook.web.dto.PostsUpdateRequestDto;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @Service
@@ -40,4 +46,14 @@ public class PostsService {
         //영속성 컨텍스트 : 엔티티를 영구 저장하는 환경
         //JPA의 핵심은 엔티티가 영속성 컨텍스트에 포함되어 있냐 아니냐로 갈린다
     }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    //트랜잭션 유지하되 조회기능만 -> 조회속도 개선
+    //등록 수정 삭제 기능이 전혀없는 서비스 메소드에서 사용하자
+    public List<PostsListResponseDto> findAlldesc(){
+        return postsRepository.findAllDesc().stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
 }
